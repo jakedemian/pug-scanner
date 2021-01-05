@@ -1,10 +1,12 @@
 import logo from './logo.svg';
 import './App.css';
-import UnderConstruction from './pages/UnderConstruction';
+import Homepage from './pages/Homepage';
 
 const App = () => {
   return (
-    <UnderConstruction/>
+    <div className="App">
+      <Homepage/>
+    </div>
   );
 }
 
