@@ -6,7 +6,6 @@ import PlayerCard from '../components/PlayerCard';
 
 const useStyles = makeStyles({
     root: {
-        backgroundColor: "rgb(25,26,26)",
         height: "100vh"
     },
     mainTextField: {
@@ -24,7 +23,10 @@ const useStyles = makeStyles({
       }
     },
     cardWrapper: {
-        marginTop: 16
+        marginTop: 16,
+        display: "grid",
+        gridTemplateColumns: "50% 50%",
+        width: "65%"
     }
   });
 
@@ -51,7 +53,7 @@ const Homepage = props => {
 
             let playersArray = [];
 
-            let url = "https://raider.io/api/v1/characters/profile?region=us&fields=gear,guild,covenant,mythic_plus_ranks,raid_progression,mythic_plus_scores_by_season,mythic_plus_recent_runs,mythic_plus_best_runs&";
+            let url = "https://raider.io/api/v1/characters/profile?region=us&fields=gear,guild,covenant,mythic_plus_ranks,raid_progression,mythic_plus_scores_by_season:current,mythic_plus_recent_runs,mythic_plus_best_runs&";
             for(let i = 0; i < charNameData.length; i++){
                 let thisUrl = url + "realm=" + charNameData[i].realm + "&name=" + charNameData[i].name;
                 let res = await axios.get(thisUrl)
@@ -78,7 +80,7 @@ const Homepage = props => {
 
     return (
         <div className={classes.root}>
-            <Typography>Primepriest-Stormrage;Orillun-Stormrage;Kupunch-Stormrage;Vespe-Stormrage;Fancymoose-Stormrage;Bigoofta-Stormrage</Typography>
+            <Typography>Primepriest-Stormrage;Orillun-Stormrage;Kupunch-Stormrage;Vespe-Stormrage;Fancymoose-Stormrage;Bigoofta-Stormrage;Jaquabas-Whisperwind</Typography>
             <TextField
                 ref={inputRef}
                 className={classes.mainTextField}
@@ -98,13 +100,15 @@ const Homepage = props => {
                 }}
             />
             
-            {players.map((player, index) => {
-                return (
-                    <div key={index} className={classes.cardWrapper}>
-                        <PlayerCard player={player} />
-                    </div>
-                )
-            })}
+            <div className={classes.cardWrapper}>
+                {players.map((player, index) => {
+                    return (
+                        <div key={index} className={classes.cardWrapper}>
+                            <PlayerCard player={player} />
+                        </div>
+                    )
+                })}
+            </div>
 
         </div>
     );
