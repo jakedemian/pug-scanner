@@ -41,8 +41,9 @@ const Homepage = props => {
     const classes = useStyles();
     const inputRef = useRef(null);
 
-    const [pastedString, setPastedString] = useState(null);
+    const [pastedString, setPastedString] = useState("");
     const [isFetching, setIsFetching] = useState(false);
+    const [failedCharacters, setFailedCharacters] = useState([]);
     const [players, setPlayers] = useState([]);
 
     const [scoreColors, setScoreColors] = useState([]);
@@ -58,7 +59,7 @@ const Homepage = props => {
         let charNamesArray = pastedString.split(";");
         let charNameData = [];
 
-        for(let i = 0; i < charNamesArray.length; i++){
+        for (let i = 0; i < charNamesArray.length; i++) {
             let character = charNamesArray[i].split("-");
             charNameData.push({
                 "name": character[0],
@@ -68,11 +69,26 @@ const Homepage = props => {
 
         let playersArray = [];
 
+        let failed = [];
         let url = "https://raider.io/api/v1/characters/profile?region=us&fields=gear,guild,covenant,mythic_plus_ranks,raid_progression,mythic_plus_scores_by_season:current,mythic_plus_recent_runs,mythic_plus_best_runs&";
-        for(let i = 0; i < charNameData.length; i++){
+        for (let i = 0; i < charNameData.length; i++) {
             let thisUrl = url + "realm=" + charNameData[i].realm + "&name=" + charNameData[i].name;
-            let res = await axios.get(thisUrl)
+
+            let res;
+            try {
+                res = await axios.get(thisUrl);
+            } catch(err){
+                failed.push(charNameData[i].name + "-" + charNameData[i].realm);
+                console.error(err);
+                continue;
+            }
+
             playersArray.push(res.data);
+        }
+
+        if(failed.length > 0){
+            setFailedCharacters(failed);
+            console.log("Failed to load the following characters: ", failedCharacters);
         }
 
         setPlayers(playersArray);
@@ -124,9 +140,10 @@ const Homepage = props => {
                     <Button
                         className="text-white"
                         onClick={() => {
-                            setPastedString(null);
+                            setPastedString("");
                             inputRef.current.querySelector("textarea").value = "";
                             setPlayers([]);
+                            setFailedCharacters([]);
                         }}
                     >
                         Clear
@@ -134,6 +151,16 @@ const Homepage = props => {
                 </div>
             )}
 
+            {failedCharacters.length > 0 && (
+                <div>
+                    <Typography className="text-red-500">Failed to load the following characters:</Typography>
+                    {failedCharacters.map((character, index) => {
+                        return (
+                            <Typography variant="caption" className="ml-4 text-red-500 block">{character}</Typography>
+                        )
+                    })}
+                </div>
+            )}
 
             <div className={classes.cardWrapper}>
                 {isFetching ? (
