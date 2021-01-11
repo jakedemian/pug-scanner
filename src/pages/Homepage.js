@@ -3,17 +3,21 @@ import axios from 'axios';
 import React, { useEffect, useState, useRef } from 'react';
 import { TextField, Typography } from '@material-ui/core';
 import PlayerCard from '../components/PlayerCard';
-import logo from '../assets/logo.png';
+import logo from '../assets/images/logo.png';
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles({
     root: {
         height: "100vh",
-        padding: 32
+        display: "flex",
+        justifyContent: "center"
+    },
+    wrapper: {
+        width: 850
     },
     mainTextField: {
-      width: "50%",
+      width: "100%",
       "& .MuiOutlinedInput-root.Mui-focused fieldset": {
         borderColor: "#fca503"
       },
@@ -27,7 +31,7 @@ const useStyles = makeStyles({
     },
     cardWrapper: {
         marginTop: 16,
-        width: "65%"
+        width: "100%"
     },
     cardGrid: {
         display: "grid",
@@ -35,7 +39,7 @@ const useStyles = makeStyles({
     }
   });
 
-// Primepriest-Stormrage;Orillun-Stormrage;Kupunch-Stormrage;Vespe-Stormrage;Fancymoose-Stormrage;Bigoofta-Stormrage;Jaquabas-Whisperwind
+// Primepriest-Stormrage;Orillun-Stormrage;Kupunch-Stormrage;Vespe-Stormrage;Fancymoose-Stormrage;Bigoofta-Stormrage
 
 const Homepage = props => {
     const classes = useStyles();
@@ -108,76 +112,79 @@ const Homepage = props => {
 
     return (
         <div className={classes.root}>
-            <div>
-                <img src={logo} className="inline"/>
-                <div className="inline-block" style={{transform: "translateY(7px)"}}>
-                    <Typography className="text-gray-500 italic">v0.1</Typography>
-                </div>
-            </div>
-            <TextField
-                ref={inputRef}
-                className={classes.mainTextField}
-                placeholder="Paste /ps string here"
-                autoFocus
-                multiline
-                rows={4}
-                variant="outlined"
-                value={pastedString}
-                onKeyPress={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }}
-                onPaste={(e) => {
-                    if(pastedString !== e.clipboardData.getData('Text')) {
-                        // only set if not exactly the same, otherwise it doesnt work right
-                        setPastedString(e.clipboardData.getData('Text'));
-                    }
-                    e.stopPropagation();
-                }}
-            />
-            {!!pastedString && (
+            <div className={classes.wrapper}>
                 <div>
-                    <Button
-                        className="text-white"
-                        onClick={() => {
-                            setPastedString("");
-                            inputRef.current.querySelector("textarea").value = "";
-                            setPlayers([]);
-                            setFailedCharacters([]);
-                        }}
-                    >
-                        Clear
-                    </Button>
-                </div>
-            )}
-
-            {failedCharacters.length > 0 && (
-                <div>
-                    <Typography className="text-red-500">Failed to load the following characters:</Typography>
-                    {failedCharacters.map((character, index) => {
-                        return (
-                            <Typography variant="caption" className="ml-4 text-red-500 block">{character}</Typography>
-                        )
-                    })}
-                </div>
-            )}
-
-            <div className={classes.cardWrapper}>
-                {isFetching ? (
-                    <div className="w-full flex justify-center">
-                        <CircularProgress style={{color: "#fca503"}}/>
+                    <img src={logo} className="inline"/>
+                    <div className="inline-block" style={{transform: "translateY(7px)"}}>
+                        <Typography className="text-gray-500 italic">v0.1</Typography>
                     </div>
-                ) : (
-                    <div className={classes.cardGrid}>
-                        {players.map((player, index) => {
+                </div>
+                <TextField
+                    ref={inputRef}
+                    className={classes.mainTextField}
+                    placeholder="Paste /ps string here"
+                    autoFocus
+                    multiline
+                    rows={4}
+                    variant="outlined"
+                    value={pastedString}
+                    onKeyPress={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }}
+                    onPaste={(e) => {
+                        if(pastedString !== e.clipboardData.getData('Text')) {
+                            // only set if not exactly the same, otherwise it doesnt work right
+                            setPastedString(e.clipboardData.getData('Text'));
+                            setFailedCharacters([]);
+                        }
+                        e.stopPropagation();
+                    }}
+                />
+                {!!pastedString && (
+                    <div>
+                        <Button
+                            className="text-white"
+                            onClick={() => {
+                                setPastedString("");
+                                inputRef.current.querySelector("textarea").value = "";
+                                setPlayers([]);
+                                setFailedCharacters([]);
+                            }}
+                        >
+                            Clear
+                        </Button>
+                    </div>
+                )}
+
+                {failedCharacters.length > 0 && (
+                    <div>
+                        <Typography className="text-red-500">Failed to load the following characters:</Typography>
+                        {failedCharacters.map((character, index) => {
                             return (
-                                <div key={index} className={classes.cardWrapper}>
-                                    <PlayerCard player={player} scoreColors={scoreColors}/>
-                                </div>
+                                <Typography variant="caption" className="ml-4 text-red-500 block">{character}</Typography>
                             )
                         })}
                     </div>
                 )}
+
+                <div className={classes.cardWrapper}>
+                    {isFetching ? (
+                        <div className="w-full flex justify-center">
+                            <CircularProgress style={{color: "#fca503"}}/>
+                        </div>
+                    ) : (
+                        <div className={classes.cardGrid}>
+                            {players.map((player, index) => {
+                                return (
+                                    <div key={index} className={classes.cardWrapper}>
+                                        <PlayerCard player={player} scoreColors={scoreColors}/>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
