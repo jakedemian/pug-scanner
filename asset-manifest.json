@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/pug-scanner/static/css/main.51c01b15.chunk.css",
-    "main.js": "/pug-scanner/static/js/main.66308ddc.chunk.js",
-    "main.js.map": "/pug-scanner/static/js/main.66308ddc.chunk.js.map",
-    "runtime-main.js": "/pug-scanner/static/js/runtime-main.380907a2.js",
-    "runtime-main.js.map": "/pug-scanner/static/js/runtime-main.380907a2.js.map",
-    "static/js/2.7b9042c2.chunk.js": "/pug-scanner/static/js/2.7b9042c2.chunk.js",
-    "static/js/2.7b9042c2.chunk.js.map": "/pug-scanner/static/js/2.7b9042c2.chunk.js.map",
-    "static/js/3.6cf4093f.chunk.js": "/pug-scanner/static/js/3.6cf4093f.chunk.js",
-    "static/js/3.6cf4093f.chunk.js.map": "/pug-scanner/static/js/3.6cf4093f.chunk.js.map",
+    "main.css": "/pug-scanner/static/css/main.cb25f458.chunk.css",
+    "main.js": "/pug-scanner/static/js/main.bcf50538.chunk.js",
+    "main.js.map": "/pug-scanner/static/js/main.bcf50538.chunk.js.map",
+    "runtime-main.js": "/pug-scanner/static/js/runtime-main.16a95dbf.js",
+    "runtime-main.js.map": "/pug-scanner/static/js/runtime-main.16a95dbf.js.map",
+    "static/js/2.d6985d12.chunk.js": "/pug-scanner/static/js/2.d6985d12.chunk.js",
+    "static/js/2.d6985d12.chunk.js.map": "/pug-scanner/static/js/2.d6985d12.chunk.js.map",
+    "static/js/3.bf69511c.chunk.js": "/pug-scanner/static/js/3.bf69511c.chunk.js",
+    "static/js/3.bf69511c.chunk.js.map": "/pug-scanner/static/js/3.bf69511c.chunk.js.map",
     "index.html": "/pug-scanner/index.html",
-    "static/css/main.51c01b15.chunk.css.map": "/pug-scanner/static/css/main.51c01b15.chunk.css.map",
-    "static/js/2.7b9042c2.chunk.js.LICENSE.txt": "/pug-scanner/static/js/2.7b9042c2.chunk.js.LICENSE.txt",
+    "static/css/main.cb25f458.chunk.css.map": "/pug-scanner/static/css/main.cb25f458.chunk.css.map",
+    "static/js/2.d6985d12.chunk.js.LICENSE.txt": "/pug-scanner/static/js/2.d6985d12.chunk.js.LICENSE.txt",
     "static/media/logo.6ce24c58.svg": "/pug-scanner/static/media/logo.6ce24c58.svg",
     "static/media/raiderio.9f859749.svg": "/pug-scanner/static/media/raiderio.9f859749.svg",
     "static/media/world-of-warcraft.8bd0d3d3.svg": "/pug-scanner/static/media/world-of-warcraft.8bd0d3d3.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.380907a2.js",
-    "static/js/2.7b9042c2.chunk.js",
-    "static/css/main.51c01b15.chunk.css",
-    "static/js/main.66308ddc.chunk.js"
+    "static/js/runtime-main.16a95dbf.js",
+    "static/js/2.d6985d12.chunk.js",
+    "static/css/main.cb25f458.chunk.css",
+    "static/js/main.bcf50538.chunk.js"
   ]
 }
