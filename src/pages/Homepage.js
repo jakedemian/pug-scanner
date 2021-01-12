@@ -133,7 +133,7 @@ const Homepage = props => {
                 <div>
                     <img src={logo} className="inline"/>
                     <div className="inline-block" style={{transform: "translateY(7px)"}}>
-                        <Typography className="text-gray-500 italic">v0.1</Typography>
+                        <Typography className="text-gray-500 italic">v0.2</Typography>
                     </div>
                 </div>
                 <TextField
