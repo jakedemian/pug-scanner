@@ -1,11 +1,14 @@
-import { makeStyles } from '@material-ui/styles';
+import {makeStyles} from '@material-ui/styles';
 import axios from 'axios';
-import React, { useEffect, useState, useRef } from 'react';
-import { TextField, Typography } from '@material-ui/core';
+import React, {useEffect, useState, useRef} from 'react';
+import {TextField, Typography} from '@material-ui/core';
 import PlayerCard from '../components/PlayerCard';
 import logo from '../assets/images/logo.png';
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import GroupSummary from "../components/GroupSummary";
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from "@material-ui/lab/AlertTitle";
 
 const useStyles = makeStyles({
     root: {
@@ -17,17 +20,17 @@ const useStyles = makeStyles({
         width: 850
     },
     mainTextField: {
-      width: "100%",
-      "& .MuiOutlinedInput-root.Mui-focused fieldset": {
-        borderColor: "#fca503"
-      },
-      "& .MuiOutlinedInput-root": {
-          color: "white",
-          backgroundColor: "#111",
-          "& textarea::placeholder": {
-              color: "#eee"
-          }
-      }
+        width: "100%",
+        "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+            borderColor: "#fca503"
+        },
+        "& .MuiOutlinedInput-root": {
+            color: "white",
+            backgroundColor: "#111",
+            "& textarea::placeholder": {
+                color: "#eee"
+            }
+        }
     },
     cardWrapper: {
         marginTop: 16,
@@ -37,7 +40,7 @@ const useStyles = makeStyles({
         display: "grid",
         gridTemplateColumns: "50% 50%",
     }
-  });
+});
 
 // Primepriest-Stormrage;Orillun-Stormrage;Kupunch-Stormrage;Vespe-Stormrage;Fancymoose-Stormrage;Bigoofta-Stormrage
 
@@ -51,6 +54,20 @@ const Homepage = props => {
     const [players, setPlayers] = useState([]);
 
     const [scoreColors, setScoreColors] = useState([]);
+
+    const getScoreColor = score => {
+        if(!scoreColors && scoreColors.length == 0){
+            return "#FFFFFF";
+        }
+
+        for(const scoreData of scoreColors){
+            if(score < scoreData.score){
+                continue;
+            }
+
+            return scoreData.rgbHex;
+        }
+    };
 
     const fetchScoreColors = async () => {
         let url = "https://raider.io/api/v1/mythic-plus/score-tiers?season=current";
@@ -81,7 +98,7 @@ const Homepage = props => {
             let res;
             try {
                 res = await axios.get(thisUrl);
-            } catch(err){
+            } catch (err) {
                 failed.push(charNameData[i].name + "-" + charNameData[i].realm);
                 console.error(err);
                 continue;
@@ -90,7 +107,7 @@ const Homepage = props => {
             playersArray.push(res.data);
         }
 
-        if(failed.length > 0){
+        if (failed.length > 0) {
             setFailedCharacters(failed);
             console.log("Failed to load the following characters: ", failedCharacters);
         }
@@ -101,7 +118,7 @@ const Homepage = props => {
 
     useEffect(() => {
         console.log("pasted string is", pastedString);
-        if(!!pastedString){
+        if (!!pastedString) {
             fetchPlayers();
         }
     }, [pastedString]);
@@ -133,7 +150,7 @@ const Homepage = props => {
                         e.stopPropagation();
                     }}
                     onPaste={(e) => {
-                        if(pastedString !== e.clipboardData.getData('Text')) {
+                        if (pastedString !== e.clipboardData.getData('Text')) {
                             // only set if not exactly the same, otherwise it doesnt work right
                             setPastedString(e.clipboardData.getData('Text'));
                             setFailedCharacters([]);
@@ -158,14 +175,14 @@ const Homepage = props => {
                 )}
 
                 {failedCharacters.length > 0 && (
-                    <div>
-                        <Typography className="text-red-500">Failed to load the following characters:</Typography>
+                    <Alert severity="warning">
+                        <AlertTitle>Failed to load the following characters:</AlertTitle>
                         {failedCharacters.map((character, index) => {
                             return (
-                                <Typography variant="caption" className="ml-4 text-red-500 block">{character}</Typography>
+                                <Typography key={index} variant="caption" className="block">{character}</Typography>
                             )
                         })}
-                    </div>
+                    </Alert>
                 )}
 
                 <div className={classes.cardWrapper}>
@@ -174,14 +191,17 @@ const Homepage = props => {
                             <CircularProgress style={{color: "#fca503"}}/>
                         </div>
                     ) : (
-                        <div className={classes.cardGrid}>
-                            {players.map((player, index) => {
-                                return (
-                                    <div key={index} className={classes.cardWrapper}>
-                                        <PlayerCard player={player} scoreColors={scoreColors}/>
-                                    </div>
-                                )
-                            })}
+                        <div>
+                            <GroupSummary players={players} getScoreColor={getScoreColor}/>
+                            <div className={classes.cardGrid}>
+                                {players.map((player, index) => {
+                                    return (
+                                        <div key={index} className={classes.cardWrapper}>
+                                            <PlayerCard player={player} getScoreColor={getScoreColor}/>
+                                        </div>
+                                    )
+                                })}
+                            </div>
                         </div>
                     )}
                 </div>

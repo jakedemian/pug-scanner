@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Card, Typography } from '@material-ui/core';
 import {CovenantColors, ClassColors} from '../utilities/ColorMaps';
@@ -7,6 +7,11 @@ import Icon from "@material-ui/core/Icon";
 import wowLogo from '../assets/images/world-of-warcraft.svg';
 import raiderioLogo from '../assets/images/raiderio.svg';
 import Link from "@material-ui/core/Link";
+import Slide from "@material-ui/core/Slide";
+import Paper from "@material-ui/core/Paper";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import Collapse from "@material-ui/core/Collapse";
 
 const useStyles = makeStyles({
     root: {
@@ -34,30 +39,32 @@ const useStyles = makeStyles({
         width: 20,
         height: 20,
         margin: "0 2px"
+    },
+    dungeonStar: {
+        color: "#fca503",
+        fontSize: 14,
+        marginTop: -2
+    },
+    dungeonListItem: {
+        width: "75%",
+        padding: 0,
+        "&:hover": {
+            backgroundColor: "#fff1"
+        }
     }
   });
 
 const PlayerCard = props => {
     const classes = useStyles();
-    const {player, scoreColors} = props;
+    const {player, getScoreColor} = props;
+
+    const [expanded, setExpanded] = useState(false);
 
     const playerScore = player.mythic_plus_scores_by_season.length > 0 ?
         player.mythic_plus_scores_by_season[0].scores.all :
         0;
 
-    const getScoreColor = score => {
-        if(!scoreColors && scoreColors.length == 0){
-            return "#FFFFFF";
-        }
-
-        for(const scoreData of scoreColors){
-            if(score < scoreData.score){
-                continue;
-            }
-
-            return scoreData.rgbHex;
-        }
-    };
+    console.log(player);
 
     return (
         <Card className={classes.root}>
@@ -91,7 +98,40 @@ const PlayerCard = props => {
                     </div>
                 </div>
             </div>
-            <Button className={`${classes.expandButton}`}><Icon className="text-white">expand_more</Icon></Button>
+            <Collapse in={expanded}>
+                <div>
+                    <Typography style={{textAlign: "center"}}>Recent Keys</Typography>
+                    <List className="w-full flex flex-col justify-center items-center">
+                        {player.mythic_plus_recent_runs.map((run, index) => {
+                            let stars = [];
+                            for(let i = 0; i < run.num_keystone_upgrades; i++){
+                                stars.push(<Icon className={classes.dungeonStar}>star</Icon>);
+                            }
+                            return (
+                                <ListItem key={index} dense className={classes.dungeonListItem}>
+                                    <Link className="w-full flex justify-between items-center" href={run.url} target="_blank">
+                                        <Typography variant="caption">{run.dungeon} +{run.mythic_level}</Typography>
+                                        <div>
+                                            {run.num_keystone_upgrades > 0 ? (
+                                                <div className="flex justify-start items-center">
+                                                    {stars}
+                                                </div>
+                                            ) : (
+                                                <Typography style={{color: "red"}}>UNTIMED</Typography>
+                                            )}
+                                        </div>
+                                    </Link>
+                                </ListItem>
+                            )
+                        })}
+                    </List>
+                </div>
+            </Collapse>
+            <Button className={`${classes.expandButton}`} onClick={() => setExpanded(!expanded)}>
+                <Icon className="text-white">
+                    {expanded ? "expand_less" : "expand_more"}
+                </Icon>
+            </Button>
         </Card>
     );
 }
