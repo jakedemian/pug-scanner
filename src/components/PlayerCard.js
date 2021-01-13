@@ -51,20 +51,24 @@ const useStyles = makeStyles({
         "&:hover": {
             backgroundColor: "#fff1"
         }
+    },
+    longGuildName: {
+        fontSize: 10,
+        maxWidth: 100,
+        textAlign: "center"
     }
   });
 
 const PlayerCard = props => {
     const classes = useStyles();
     const {player, getScoreColor} = props;
+    console.log(player);
 
     const [expanded, setExpanded] = useState(false);
 
     const playerScore = player.mythic_plus_scores_by_season.length > 0 ?
         player.mythic_plus_scores_by_season[0].scores.all :
         0;
-
-    console.log(player);
 
     return (
         <Card className={classes.root}>
@@ -82,15 +86,27 @@ const PlayerCard = props => {
                             <Typography variant="caption" className="ml-4" style={{color: ClassColors[player.class]}}>{player.class}</Typography>
                         </div>
                         <div className="flex justify-between items-center">
-                            {player.guild && <Typography variant="caption"  className="italic">{"<" + player.guild.name + ">"}</Typography>}
+                            {player.guild && (
+                                <Typography
+                                    variant="caption"
+                                    className={`${player.guild.name.length >= 16 && classes.longGuildName} italic`}
+                                >
+                                    {"<" + player.guild.name + ">"}
+                                </Typography>
+                            )}
                             <Typography variant="caption" className="italic font-thin ml-2 text-gray-500">{player.realm}</Typography>
                         </div>
 
-                        <Typography variant="caption" style={{color: CovenantColors[player.covenant.name]}}>{player.covenant.name} (R{player.covenant.renown_level})</Typography>
+                        {player.covenant && <Typography variant="caption" style={{color: CovenantColors[player.covenant.name]}}>{player.covenant.name} (R{player.covenant.renown_level})</Typography>}
                     </div>
                     <div className="flex flex-col justify-center items-center">
                         <Typography>{player.raid_progression["castle-nathria"].summary}</Typography>
-                        <Typography className="font-bold" style={{color: getScoreColor(playerScore)}}>{playerScore}</Typography>
+                        <Typography
+                            className={`${playerScore > 0 ? "font-bold" : "italic text-red-500"}`}
+                            style={{color: playerScore > 0 && getScoreColor(playerScore)}}
+                        >
+                            {playerScore > 0 ? playerScore : "No Score"}
+                        </Typography>
                         <div className="flex justify-center items-center">
                             <Link target="_blank" href={`https://worldofwarcraft.com/en-us/character/${player.region}/${player.realm.toLowerCase()}/${player.name.toLowerCase()}`}><img className={classes.linkIcon} src={wowLogo}/></Link>
                             <Link target="_blank" href={`https://raider.io/characters/${player.region}/${player.realm.toLowerCase()}/${player.name}`}><img className={classes.linkIcon} src={raiderioLogo}/></Link>
@@ -117,7 +133,7 @@ const PlayerCard = props => {
                                                     {stars}
                                                 </div>
                                             ) : (
-                                                <Typography style={{color: "red"}}>UNTIMED</Typography>
+                                                <Typography style={{color: "red", fontSize: 14}}>UNTIMED</Typography>
                                             )}
                                         </div>
                                     </Link>

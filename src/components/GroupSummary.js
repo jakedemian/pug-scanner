@@ -21,9 +21,10 @@ const useStyles = makeStyles(theme => ({
 
 const GroupSummary = props => {
     const classes = useStyles();
-    const {players, getScoreColor} = props;
+    const {players, getScoreColor, getScoreTextColor} = props;
     const [avgScore, setAvgScore] = useState(null);
     const [avgIlvl, setAvgIlvl] = useState(null);
+
 
     useEffect(() => {
         if(!!players && players.length > 0){
@@ -48,10 +49,11 @@ const GroupSummary = props => {
         }
     }, [players]);
 
+    const avgScoreTextColor = getScoreTextColor(avgScore);
 
     return !!players && players.length > 0 ? (
         <div className="text-white flex justify-start items-center">
-            <div className={classes.groupInfoBlock} style={{backgroundColor: getScoreColor(avgScore?.toFixed(1))}}>
+            <div className={classes.groupInfoBlock} style={{color: avgScoreTextColor, backgroundColor: getScoreColor(avgScore?.toFixed(1))}}>
                 <Typography variant="caption">Avg Score</Typography>
                 <Typography>{avgScore?.toFixed(1)}</Typography>
             </div>
