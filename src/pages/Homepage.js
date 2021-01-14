@@ -44,6 +44,8 @@ const useStyles = makeStyles({
 
 // Primepriest-Stormrage;Orillun-Stormrage;Kupunch-Stormrage;Vespe-Stormrage;Fancymoose-Stormrage;Bigoofta-Stormrage
 
+// _group:Primepriest-Stormrage
+// _applicants:Kmalock-Quel'Thalas;Dunnmor-MoonGuard;Manwarrior-MoonGuard;Sándalo-Quel'Thalas;Fandango-Quel'Thalas;Acerok-Proudmoore;Emò-Whisperwind;Eviefroggiee-Sargeras;Lchylch-Proudmoore;Neall-Medivh;Atafloosy-Medivh;Sigemund-Lightbringer;Kaaili-Stormrage;Lhozz-Stormrage;Hthhappy-Frostmourne;Kawaie-Frostmourne;Dulaameng-Frostmourne;Phenose-Frostmourne;Bellcroisse-Quel'Thalas;Opercar-Kel'Thuzad;Eckopappa-Sargeras;Zaphyria-Frostmourne;Zaevion-Stormrage;Barbaguisada-Hellscream;Keegunz-EmeraldDream;Teekpp-Sargeras;Azraäel-Quel'Thalas;
 const Homepage = props => {
     const classes = useStyles();
     const inputRef = useRef(null);
@@ -52,6 +54,7 @@ const Homepage = props => {
     const [isFetching, setIsFetching] = useState(false);
     const [failedCharacters, setFailedCharacters] = useState([]);
     const [players, setPlayers] = useState([]);
+    const [applicants, setApplicants] = useState([]);
 
     const [scoreColors, setScoreColors] = useState([]);
 
@@ -98,16 +101,25 @@ const Homepage = props => {
 
     const fetchPlayers = async () => {
         setIsFetching(true);
-        let charNamesArray = pastedString.split(";");
-        let charNameData = [];
+        const groupStringStart = pastedString.indexOf("_group:") + "_group:".length;
+        const groupStringEnd = pastedString.substr(groupStringStart).indexOf("\n");
+        const groupString = pastedString.substr(groupStringStart, groupStringEnd);
 
-        for (let i = 0; i < charNamesArray.length; i++) {
-            if(charNamesArray[i].trim().length === 0){
+        const applicantsStart = pastedString.indexOf("_applicants:") + "_applicants:".length;
+        const applicantsEnd = pastedString.substr(applicantsStart).indexOf("\n");
+        const applicantsString = pastedString.substr(applicantsStart, applicantsEnd);
+
+
+        let groupNamesArray = groupString.split(";");
+        let groupNameData = [];
+
+        for (let i = 0; i < groupNamesArray.length; i++) {
+            if(groupNamesArray[i].trim().length === 0){
                 continue;
             }
 
-            let character = charNamesArray[i].split("-");
-            charNameData.push({
+            let character = groupNamesArray[i].split("-");
+            groupNameData.push({
                 "name": character[0],
                 "realm": character[1]
             })
@@ -117,19 +129,51 @@ const Homepage = props => {
 
         let failed = [];
         let url = "https://raider.io/api/v1/characters/profile?region=us&fields=gear,guild,covenant,mythic_plus_ranks,raid_progression,mythic_plus_scores_by_season:current,mythic_plus_recent_runs,mythic_plus_best_runs&";
-        for (let i = 0; i < charNameData.length; i++) {
-            let thisUrl = url + "realm=" + charNameData[i].realm + "&name=" + charNameData[i].name;
+        for (let i = 0; i < groupNameData.length; i++) {
+            let thisUrl = url + "realm=" + groupNameData[i].realm + "&name=" + groupNameData[i].name;
 
             let res;
             try {
                 res = await axios.get(thisUrl);
             } catch (err) {
-                failed.push(charNameData[i].name + "-" + charNameData[i].realm);
+                failed.push(groupNameData[i].name + "-" + groupNameData[i].realm);
                 console.error(err);
                 continue;
             }
 
             playersArray.push(res.data);
+        }
+
+        // move this to a getapplicants function
+        let applicantNamesArray = applicantsString.split(";");
+        let applicantNameData = [];
+
+        for (let i = 0; i < applicantNamesArray.length; i++) {
+            if(applicantNamesArray[i].trim().length === 0){
+                continue;
+            }
+
+            let character = applicantNamesArray[i].split("-");
+            applicantNameData.push({
+                "name": character[0],
+                "realm": character[1]
+            })
+        }
+
+        let applicantsArray = [];
+        for (let i = 0; i < applicantNameData.length; i++) {
+            let thisUrl = url + "realm=" + applicantNameData[i].realm + "&name=" + applicantNameData[i].name;
+
+            let res;
+            try {
+                res = await axios.get(thisUrl);
+            } catch (err) {
+                failed.push(applicantNameData[i].name + "-" + applicantNameData[i].realm);
+                console.error(err);
+                continue;
+            }
+
+            applicantsArray.push(res.data);
         }
 
         if (failed.length > 0) {
@@ -138,6 +182,7 @@ const Homepage = props => {
         }
 
         setPlayers(playersArray);
+        setApplicants(applicantsArray);
         setIsFetching(false);
     };
 
@@ -158,7 +203,7 @@ const Homepage = props => {
                 <div>
                     <img src={logo} className="inline"/>
                     <div className="inline-block" style={{transform: "translateY(7px)"}}>
-                        <Typography className="text-gray-500 italic">v0.2</Typography>
+                        <Typography className="text-gray-500 italic">v0.3</Typography>
                     </div>
                 </div>
                 <TextField
@@ -191,6 +236,7 @@ const Homepage = props => {
                                 setPastedString("");
                                 inputRef.current.querySelector("textarea").value = "";
                                 setPlayers([]);
+                                setApplicants([]);
                                 setFailedCharacters([]);
                             }}
                         >
@@ -212,21 +258,43 @@ const Homepage = props => {
 
                 <div className={classes.cardWrapper}>
                     {isFetching ? (
-                        <div className="w-full flex justify-center">
+                        <div className="w-full flex flex-col items-center justify-center">
                             <CircularProgress style={{color: "#fca503"}}/>
+                            <Typography className="text-white">Retreiving character info...</Typography>
                         </div>
                     ) : (
                         <div>
                             <GroupSummary players={players} getScoreColor={getScoreColor} getScoreTextColor={getScoreTextColor}/>
-                            <div className={classes.cardGrid}>
-                                {players.map((player, index) => {
-                                    return (
-                                        <div key={index} className={classes.cardWrapper}>
-                                            <PlayerCard player={player} getScoreColor={getScoreColor}/>
-                                        </div>
-                                    )
-                                })}
+
+                            {!!players && !!players.length > 0 && (
+                                <div className="mt-16">
+                                <Typography variant="h5" className="text-white">Your Group</Typography>
+                                <div className={classes.cardGrid}>
+                                    {players.map((player, index) => {
+                                        return (
+                                            <div key={index} className={classes.cardWrapper}>
+                                                <PlayerCard player={player} getScoreColor={getScoreColor}/>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
                             </div>
+                            )}
+
+                            {!!applicants && !!applicants.length > 0 && (
+                            <div className="mt-16">
+                                <Typography variant="h5" className="text-white">Group Finder Applicants</Typography>
+                                <div className={classes.cardGrid}>
+                                    {applicants.map((player, index) => {
+                                        return (
+                                            <div key={index} className={classes.cardWrapper}>
+                                                <PlayerCard player={player} getScoreColor={getScoreColor}/>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                            )}
                         </div>
                     )}
                 </div>
