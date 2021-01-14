@@ -105,11 +105,6 @@ const Homepage = props => {
         const groupStringEnd = pastedString.substr(groupStringStart).indexOf("\n");
         const groupString = pastedString.substr(groupStringStart, groupStringEnd);
 
-        const applicantsStart = pastedString.indexOf("_applicants:") + "_applicants:".length;
-        const applicantsEnd = pastedString.substr(applicantsStart).indexOf("\n");
-        const applicantsString = pastedString.substr(applicantsStart, applicantsEnd);
-
-
         let groupNamesArray = groupString.split(";");
         let groupNameData = [];
 
@@ -143,46 +138,54 @@ const Homepage = props => {
 
             playersArray.push(res.data);
         }
+        setPlayers(playersArray);
+
 
         // move this to a getapplicants function
-        let applicantNamesArray = applicantsString.split(";");
-        let applicantNameData = [];
+        if(pastedString.indexOf("_applicants:") > -1) {
+            const applicantsStart = pastedString.indexOf("_applicants:") + "_applicants:".length;
+            const applicantsEnd = pastedString.substr(applicantsStart).indexOf("\n");
+            const applicantsString = pastedString.substr(applicantsStart, applicantsEnd);
 
-        for (let i = 0; i < applicantNamesArray.length; i++) {
-            if(applicantNamesArray[i].trim().length === 0){
-                continue;
+            let applicantNamesArray = applicantsString.split(";");
+            let applicantNameData = [];
+
+            for (let i = 0; i < applicantNamesArray.length; i++) {
+                if (applicantNamesArray[i].trim().length === 0) {
+                    continue;
+                }
+
+                let character = applicantNamesArray[i].split("-");
+                applicantNameData.push({
+                    "name": character[0],
+                    "realm": character[1]
+                })
             }
 
-            let character = applicantNamesArray[i].split("-");
-            applicantNameData.push({
-                "name": character[0],
-                "realm": character[1]
-            })
-        }
+            let applicantsArray = [];
+            for (let i = 0; i < applicantNameData.length; i++) {
+                let thisUrl = url + "realm=" + applicantNameData[i].realm + "&name=" + applicantNameData[i].name;
 
-        let applicantsArray = [];
-        for (let i = 0; i < applicantNameData.length; i++) {
-            let thisUrl = url + "realm=" + applicantNameData[i].realm + "&name=" + applicantNameData[i].name;
+                let res;
+                try {
+                    res = await axios.get(thisUrl);
+                } catch (err) {
+                    failed.push(applicantNameData[i].name + "-" + applicantNameData[i].realm);
+                    console.error(err);
+                    continue;
+                }
 
-            let res;
-            try {
-                res = await axios.get(thisUrl);
-            } catch (err) {
-                failed.push(applicantNameData[i].name + "-" + applicantNameData[i].realm);
-                console.error(err);
-                continue;
+                applicantsArray.push(res.data);
             }
 
-            applicantsArray.push(res.data);
+            if (failed.length > 0) {
+                setFailedCharacters(failed);
+                console.log("Failed to load the following characters: ", failedCharacters);
+            }
+            setApplicants(applicantsArray);
+
         }
 
-        if (failed.length > 0) {
-            setFailedCharacters(failed);
-            console.log("Failed to load the following characters: ", failedCharacters);
-        }
-
-        setPlayers(playersArray);
-        setApplicants(applicantsArray);
         setIsFetching(false);
     };
 
