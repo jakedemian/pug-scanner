@@ -46,6 +46,43 @@ const useStyles = makeStyles({
 
 // _group:Primepriest-Stormrage
 // _applicants:Kmalock-Quel'Thalas;Dunnmor-MoonGuard;Manwarrior-MoonGuard;Sándalo-Quel'Thalas;Fandango-Quel'Thalas;Acerok-Proudmoore;Emò-Whisperwind;Eviefroggiee-Sargeras;Lchylch-Proudmoore;Neall-Medivh;Atafloosy-Medivh;Sigemund-Lightbringer;Kaaili-Stormrage;Lhozz-Stormrage;Hthhappy-Frostmourne;Kawaie-Frostmourne;Dulaameng-Frostmourne;Phenose-Frostmourne;Bellcroisse-Quel'Thalas;Opercar-Kel'Thuzad;Eckopappa-Sargeras;Zaphyria-Frostmourne;Zaevion-Stormrage;Barbaguisada-Hellscream;Keegunz-EmeraldDream;Teekpp-Sargeras;Azraäel-Quel'Thalas;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// TODO
+/*
+be able to minimize sections and have it persist on new searches (eg minimize your group section)
+add dates to recent keys
+add role played in recent keys=
+pasting in a group with no applicants does not clear out applicants from a previous search
+*/
+// TODO
+
+
+
+
+
+
+
+
+
+
+
+
+
 const Homepage = props => {
     const classes = useStyles();
     const inputRef = useRef(null);
