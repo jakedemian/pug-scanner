@@ -221,6 +221,8 @@ const Homepage = props => {
             }
             setApplicants(applicantsArray);
 
+        } else {
+            setApplicants([]);
         }
 
         setIsFetching(false);
