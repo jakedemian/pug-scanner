@@ -1,7 +1,7 @@
 import {makeStyles} from '@material-ui/styles';
 import axios from 'axios';
 import React, {useEffect, useState, useRef} from 'react';
-import {TextField, Typography} from '@material-ui/core';
+import {Icon, IconButton, TextField, Typography} from '@material-ui/core';
 import PlayerCard from '../components/PlayerCard';
 import logo from '../assets/images/logo.png';
 import Button from "@material-ui/core/Button";
@@ -45,8 +45,8 @@ const useStyles = makeStyles({
 // Primepriest-Stormrage;Orillun-Stormrage;Kupunch-Stormrage;Vespe-Stormrage;Fancymoose-Stormrage;Bigoofta-Stormrage
 
 // _group:Primepriest-Stormrage
-// _applicants:Kmalock-Quel'Thalas;Dunnmor-MoonGuard;Manwarrior-MoonGuard;Sándalo-Quel'Thalas;Fandango-Quel'Thalas;Acerok-Proudmoore;Emò-Whisperwind;Eviefroggiee-Sargeras;Lchylch-Proudmoore;Neall-Medivh;Atafloosy-Medivh;Sigemund-Lightbringer;Kaaili-Stormrage;Lhozz-Stormrage;Hthhappy-Frostmourne;Kawaie-Frostmourne;Dulaameng-Frostmourne;Phenose-Frostmourne;Bellcroisse-Quel'Thalas;Opercar-Kel'Thuzad;Eckopappa-Sargeras;Zaphyria-Frostmourne;Zaevion-Stormrage;Barbaguisada-Hellscream;Keegunz-EmeraldDream;Teekpp-Sargeras;Azraäel-Quel'Thalas;
-
+// _applicants:Kmalock-Quel'Thalas;Dunnmor-MoonGuard;Manwarrior-MoonGuard;
+//
 
 
 
@@ -65,9 +65,8 @@ const useStyles = makeStyles({
 // TODO
 /*
 be able to minimize sections and have it persist on new searches (eg minimize your group section)
-add dates to recent keys
-add role played in recent keys=
-pasting in a group with no applicants does not clear out applicants from a previous search
+add role played in recent keys
+hovering a score should show the dps/healer/tank score breakdown
 */
 // TODO
 
@@ -92,6 +91,9 @@ const Homepage = props => {
     const [failedCharacters, setFailedCharacters] = useState([]);
     const [players, setPlayers] = useState([]);
     const [applicants, setApplicants] = useState([]);
+
+    const [groupSectionShow, setGroupSectionShow] = useState(true);
+    const [appSectionShow, setAppSectionShow] = useState(true);
 
     const [scoreColors, setScoreColors] = useState([]);
 
@@ -310,31 +312,43 @@ const Homepage = props => {
 
                             {!!players && !!players.length > 0 && (
                                 <div className="mt-16">
-                                <Typography variant="h5" className="text-white">Your Group</Typography>
-                                <div className={classes.cardGrid}>
-                                    {players.map((player, index) => {
-                                        return (
-                                            <div key={index} className={classes.cardWrapper}>
-                                                <PlayerCard player={player} getScoreColor={getScoreColor}/>
-                                            </div>
-                                        )
-                                    })}
-                                </div>
+                                    <div className="flex justify-start items-center">
+                                        <Typography variant="h5" className="text-white">Your Group</Typography>
+                                        <IconButton style={{outline: "none"}} onClick={() => setGroupSectionShow(!groupSectionShow)}><Icon style={{color: "#323232"}}>{groupSectionShow ? 'visibility' : 'visibility_off'}</Icon></IconButton>
+                                        {!groupSectionShow && players.length > 0 && <Typography style={{color: "#323232"}}>{`${players.length} hidden player(s)`}</Typography>}
+                                    </div>
+                                    {groupSectionShow && (
+                                        <div className={classes.cardGrid}>
+                                            {players.map((player, index) => {
+                                                return (
+                                                    <div key={index} className={classes.cardWrapper}>
+                                                        <PlayerCard player={player} getScoreColor={getScoreColor}/>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    )}
                             </div>
                             )}
 
                             {!!applicants && !!applicants.length > 0 && (
                             <div className="mt-16">
-                                <Typography variant="h5" className="text-white">Group Finder Applicants</Typography>
-                                <div className={classes.cardGrid}>
-                                    {applicants.map((player, index) => {
-                                        return (
-                                            <div key={index} className={classes.cardWrapper}>
-                                                <PlayerCard player={player} getScoreColor={getScoreColor}/>
-                                            </div>
-                                        )
-                                    })}
+                                <div className="flex justify-start items-center">
+                                    <Typography variant="h5" className="text-white">Group Finder Applicants</Typography>
+                                    <IconButton style={{outline: "none"}} onClick={() => setAppSectionShow(!appSectionShow)}><Icon style={{color: "#323232"}}>{appSectionShow ? 'visibility' : 'visibility_off'}</Icon></IconButton>
+                                    {!appSectionShow && applicants.length > 0 && <Typography style={{color: "#323232"}}>{`${applicants.length} hidden player(s)`}</Typography>}
                                 </div>
+                                {appSectionShow && (
+                                    <div className={classes.cardGrid}>
+                                        {applicants.map((player, index) => {
+                                            return (
+                                                <div key={index} className={classes.cardWrapper}>
+                                                    <PlayerCard player={player} getScoreColor={getScoreColor}/>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                )}
                             </div>
                             )}
                         </div>

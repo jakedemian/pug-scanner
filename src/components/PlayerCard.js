@@ -7,8 +7,6 @@ import Icon from "@material-ui/core/Icon";
 import wowLogo from '../assets/images/world-of-warcraft.svg';
 import raiderioLogo from '../assets/images/raiderio.svg';
 import Link from "@material-ui/core/Link";
-import Slide from "@material-ui/core/Slide";
-import Paper from "@material-ui/core/Paper";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Collapse from "@material-ui/core/Collapse";
@@ -47,6 +45,7 @@ const useStyles = makeStyles({
     },
     dungeonListItem: {
         width: "75%",
+        height: 18,
         padding: 0,
         "&:hover": {
             backgroundColor: "#fff1"
@@ -116,6 +115,43 @@ const PlayerCard = props => {
             </div>
             <Collapse in={expanded}>
                 <div>
+                    <Typography style={{textAlign: "center"}}>Best Runs</Typography>
+                    <List className="w-full flex flex-col justify-center items-center">
+                        {player.mythic_plus_best_runs.map((run, index) => {
+                            if(index > 2) return; // only show best 3
+                            // FIXME MASSIVE DUPLICATE CODE FRAGMENT!!!
+                            let stars = [];
+                            for(let i = 0; i < run.num_keystone_upgrades; i++){
+                                stars.push(<Icon className={classes.dungeonStar}>star</Icon>);
+                            }
+
+                            const date = new Date(run.completed_at);
+                            const dateString = `${date.getMonth()+1}/${date.getDate()+1}/${date.getFullYear().toString().substr(2)}`
+
+                            return (
+                                <ListItem key={index} dense className={classes.dungeonListItem}>
+                                    <Link className="w-full flex justify-between items-center" href={run.url} target="_blank">
+                                        <div style={{width: 70}} className="text-left">
+                                            <Typography variant="caption" className={"italic text-gray-500"}>{dateString}</Typography>
+                                        </div>
+                                        <div style={{width: 70}} className="text-right">
+                                            <Typography variant="caption">{run.short_name} +{run.mythic_level}</Typography>
+                                        </div>
+                                        <div style={{width: 100}} className="flex justify-end items-center">
+                                            {run.num_keystone_upgrades > 0 ? (
+                                                <div className="flex justify-start items-center">
+                                                    {stars}
+                                                </div>
+                                            ) : (
+                                                <Typography style={{color: "red", fontSize: 14}}>UNTIMED</Typography>
+                                            )}
+                                        </div>
+                                    </Link>
+                                </ListItem>
+                            )
+                        })}
+                    </List>
+
                     <Typography style={{textAlign: "center"}}>Recent Keys</Typography>
                     <List className="w-full flex flex-col justify-center items-center">
                         {player.mythic_plus_recent_runs.map((run, index) => {
@@ -123,11 +159,20 @@ const PlayerCard = props => {
                             for(let i = 0; i < run.num_keystone_upgrades; i++){
                                 stars.push(<Icon className={classes.dungeonStar}>star</Icon>);
                             }
+
+                            const date = new Date(run.completed_at);
+                            const dateString = `${date.getMonth()+1}/${date.getDate()+1}/${date.getFullYear().toString().substr(2)}`
+
                             return (
                                 <ListItem key={index} dense className={classes.dungeonListItem}>
                                     <Link className="w-full flex justify-between items-center" href={run.url} target="_blank">
-                                        <Typography variant="caption">{run.dungeon} +{run.mythic_level}</Typography>
-                                        <div>
+                                        <div style={{width: 70}} className="text-left">
+                                            <Typography variant="caption" className={"italic text-gray-500"}>{dateString}</Typography>
+                                        </div>
+                                        <div style={{width: 70}} className="text-right">
+                                            <Typography variant="caption">{run.short_name} +{run.mythic_level}</Typography>
+                                        </div>
+                                        <div style={{width: 100}} className="flex justify-end items-center">
                                             {run.num_keystone_upgrades > 0 ? (
                                                 <div className="flex justify-start items-center">
                                                     {stars}
