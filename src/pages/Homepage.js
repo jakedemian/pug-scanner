@@ -64,9 +64,11 @@ const useStyles = makeStyles({
 
 // TODO
 /*
-be able to minimize sections and have it persist on new searches (eg minimize your group section)
-add role played in recent keys
-hovering a score should show the dps/healer/tank score breakdown
+
+- add role played in recent keys
+- hovering a score should show the dps/healer/tank score breakdown
+- add a x/10 to loading animation.  eg 6/22 players loaded
+
 */
 // TODO
 
