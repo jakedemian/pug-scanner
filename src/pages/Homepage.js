@@ -37,19 +37,23 @@ const useStyles = makeStyles({
         width: "100%"
     },
     cardGrid: {
-        display: "grid",
-        gridTemplateColumns: "50% 50%",
+        // display: "grid",
+        // gridTemplateColumns: "50% 50%",
     }
 });
 
 // Primepriest-Stormrage;Orillun-Stormrage;Kupunch-Stormrage;Vespe-Stormrage;Fancymoose-Stormrage;Bigoofta-Stormrage
 
-// _group:Primepriest-Stormrage
+// _group:Primepriest-Zul'jin
 // _applicants:Kmalock-Quel'Thalas;Dunnmor-MoonGuard;Manwarrior-MoonGuard;
 //
 
 
 
+// sample large query
+
+// _group:Primepriest-Zul'jin
+// _applicants:Nghtwing-Thrall;Jinzare-Turalyon;Chromas-Mal'Ganis;Stormojo-Area52;Jaytee-Dath'Remar;Grommashed-WyrmrestAccord;Painbabyxx-Tichondrius;Nso-Barthilas;Angelayeiz-Illidan;Monkaman-Illidan;Pollopollo-Tichondrius;Skigz-Zul'jin;Eddie-Zul'jin;Lanxion-Zul'jin;Dewgyd-Illidan;Akusidan-Area52;Aubrie-Area52;Magbun-Saurfang;Rooflsmcrofl-Tichondrius;Worsthuntér-Thrall;Byrdflu-Tichondrius;Crackfather-Thrall;Zerrisan-Thrall;Kaylethas-Gorefiend;Somancy-Stormreaver;Jujan-Ragnaros;Mantexd-Firetree;Wacko-Spinebreaker;Kimjongheal-Gorefiend;Agoneom-Gorefiend;Razdraghoul-Area52;Olionheart-Dreadmaul;Hurtlocker-Ragnaros;Zackeros-Magtheridon;Trøl-Ragnaros;Chaotic-Ragnaros;Hünterkiller-Ragnaros;Shaedx-Tichondrius;Phatpro-Thrall;Holycowanelf-Thrall;Gumbercules-Maelstrom;Rêmy-WyrmrestAccord;Traak-Dalaran;Statues-Tichondrius;Boomboomi-Mal'Ganis;Sondune-Blackrock;Loadings-Daggerspine;Jonginnie-Quel'Thalas;Drkness-Ragnaros;Trickstah-Ysondre;Egoideal-Ysondre;Nekomia-Ysondre;Lamaark-Azralon;Calimon-Zul'jin;Duhgreatone-BlackDragonflight;Vikadin-Area52;Jasonborne-BlackDragonflight;Antuanx-Ragnaros;Gongha-Mal'Ganis;Zargblarg-Mal'Ganis;Aranaee-Thrall;Jupiteran-Mal'Ganis;Filthmongerr-Illidan;Qlockk-Illidan;Tehdy-Area52;Saucelord-Illidan;Andoceans-Barthilas;Appolyon-Vashj;Urkizzle-Illidan;Nesx-Illidan;Bangoclock-Tichondrius;Yunganime-Tichondrius;Tablepls-Tichondrius;Gorignaak-Illidan;Skootsy-Blackrock;Verths-Illidan;
 
 
 
@@ -249,7 +253,7 @@ const Homepage = props => {
                 <div>
                     <img src={logo} className="inline"/>
                     <div className="inline-block" style={{transform: "translateY(7px)"}}>
-                        <Typography className="text-gray-500 italic">v0.4</Typography>
+                        <Typography className="text-gray-500 italic">v0.5</Typography>
                     </div>
                 </div>
                 <TextField
@@ -302,7 +306,7 @@ const Homepage = props => {
                     </Alert>
                 )}
 
-                <div className={classes.cardWrapper}>
+                <div className="pb-32">
                     {isFetching ? (
                         <div className="w-full flex flex-col items-center justify-center">
                             <CircularProgress style={{color: "#fca503"}}/>
@@ -342,7 +346,9 @@ const Homepage = props => {
                                 </div>
                                 {appSectionShow && (
                                     <div className={classes.cardGrid}>
-                                        {applicants.map((player, index) => {
+                                        {applicants.sort((a,b)=> {
+                                            return b?.mythic_plus_scores_by_season?.[0].scores.all - a?.mythic_plus_scores_by_season?.[0].scores.all
+                                        }).map((player, index) => {
                                             return (
                                                 <div key={index} className={classes.cardWrapper}>
                                                     <PlayerCard player={player} getScoreColor={getScoreColor}/>
