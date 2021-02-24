@@ -9,6 +9,7 @@ import raiderioLogo from '../assets/images/raiderio.svg';
 import Link from "@material-ui/core/Link";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
+import DungeonList from "./DungeonList";
 
 const useStyles = makeStyles({
     root: {
@@ -66,8 +67,6 @@ const PlayerCard = props => {
         "Azralon": true
     };
 
-    const [expanded, setExpanded] = useState(false);
-
     const playerScore = player.mythic_plus_scores_by_season.length > 0 ?
         player.mythic_plus_scores_by_season[0].scores.all :
         0;
@@ -87,7 +86,7 @@ const PlayerCard = props => {
                                 className={`${playerScore > 0 ? "font-bold" : "italic text-red-500"}`}
                                 style={{color: playerScore > 0 && getScoreColor(playerScore)}}
                             >
-                                {playerScore > 0 ? playerScore : "No Score"}
+                                {playerScore > 0 ? playerScore.toFixed(0) : "No Score"}
                             </Typography>
                         </div>
                         <div className="flex flex-col justify-center items-start ml-8">
@@ -143,25 +142,9 @@ const PlayerCard = props => {
                                 const dateString = `${date.getMonth()+1}/${date.getDate()+1}/${date.getFullYear().toString().substr(2)}`
 
                                 return (
-                                    <ListItem key={index} dense className={classes.dungeonListItem}>
-                                        <Link className="w-full flex justify-between items-center" href={run.url} target="_blank">
-                                            <div style={{width: 60}} className="text-left">
-                                                <Typography variant="caption" className={"italic text-gray-500"}>{dateString}</Typography>
-                                            </div>
-                                            <div style={{width: 100}} className="text-right">
-                                                <Typography variant="caption">{run.short_name} +{run.mythic_level}</Typography>
-                                            </div>
-                                            <div style={{width: 70}} className="flex justify-end items-center">
-                                                {run.num_keystone_upgrades > 0 ? (
-                                                    <div className="flex justify-start items-center">
-                                                        {stars}
-                                                    </div>
-                                                ) : (
-                                                    <Icon style={{color: "red", fontSize: 14}}>cancel</Icon>
-                                                )}
-                                            </div>
-                                        </Link>
-                                    </ListItem>
+                                    <DungeonList {...{
+                                        run, index, stars, dateString
+                                    }} />
                                 )
                             })}
                         </List>
